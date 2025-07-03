@@ -1,0 +1,22 @@
+using Domain.Interfaces;
+using Domain.OutfaceModels;
+using Domain.Models;
+
+namespace Domain.Models;
+
+public class StaffManagementHttpContextScope : IHttpContextScope
+{
+    public string UserId => "";
+    public string FullName => "";
+    public string BusinessProfileId => "";
+    public string AuthorizedValue => "";
+    public IServiceProvider Provider { get; set; } = default!;
+    public AppSetting AppSetting { get; set; } = new AppSetting();
+    public HttpClientInfo ClientInfo => new HttpClientInfo();
+    public HttpClientInfo GetHttpClientInfo() => new HttpClientInfo();
+    public Task<string> GetScopeIdAsync() => Task.FromResult("");
+    public Task SetScopeIdAsync(string value) => Task.CompletedTask;
+    public void SetDefaultUserId(string? userId) { }
+    public string GetBusinessProfileId() => "";
+    public string ReferrerKey => "";
+}

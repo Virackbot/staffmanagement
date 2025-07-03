@@ -1,0 +1,49 @@
+D:\BILL24\Projects\StaffManagement\App\bin\Debug\net9.0\App.deps.json
+D:\BILL24\Projects\StaffManagement\App\bin\Debug\net9.0\App.dll
+D:\BILL24\Projects\StaffManagement\App\bin\Debug\net9.0\App.pdb
+D:\BILL24\Projects\StaffManagement\App\bin\Debug\net9.0\Domain.dll
+D:\BILL24\Projects\StaffManagement\App\bin\Debug\net9.0\Domain.pdb
+D:\BILL24\Projects\StaffManagement\App\obj\Debug\net9.0\App.csproj.AssemblyReference.cache
+D:\BILL24\Projects\StaffManagement\App\obj\Debug\net9.0\App.GeneratedMSBuildEditorConfig.editorconfig
+D:\BILL24\Projects\StaffManagement\App\obj\Debug\net9.0\Sentry.Attributes.cs
+D:\BILL24\Projects\StaffManagement\App\obj\Debug\net9.0\App.AssemblyInfoInputs.cache
+D:\BILL24\Projects\StaffManagement\App\obj\Debug\net9.0\App.AssemblyInfo.cs
+D:\BILL24\Projects\StaffManagement\App\obj\Debug\net9.0\App.csproj.CoreCompileInputs.cache
+D:\BILL24\Projects\StaffManagement\App\obj\Debug\net9.0\App.csproj.Up2Date
+D:\BILL24\Projects\StaffManagement\App\obj\Debug\net9.0\App.dll
+D:\BILL24\Projects\StaffManagement\App\obj\Debug\net9.0\refint\App.dll
+D:\BILL24\Projects\StaffManagement\App\obj\Debug\net9.0\App.pdb
+D:\BILL24\Projects\StaffManagement\App\obj\Debug\net9.0\ref\App.dll
+D:\BILL24\NewAssignment\Logger - Copy\App\obj\Debug\net9.0\App.csproj.AssemblyReference.cache
+D:\BILL24\NewAssignment\Logger - Copy\App\obj\Debug\net9.0\App.GeneratedMSBuildEditorConfig.editorconfig
+D:\BILL24\NewAssignment\Logger - Copy\App\obj\Debug\net9.0\Sentry.Attributes.cs
+D:\BILL24\NewAssignment\Logger - Copy\App\obj\Debug\net9.0\App.AssemblyInfoInputs.cache
+D:\BILL24\NewAssignment\Logger - Copy\App\obj\Debug\net9.0\App.AssemblyInfo.cs
+D:\BILL24\NewAssignment\Logger - Copy\App\obj\Debug\net9.0\App.csproj.CoreCompileInputs.cache
+D:\BILL24\NewAssignment\Logger - Copy\App\obj\Debug\net9.0\App.dll
+D:\BILL24\NewAssignment\Logger - Copy\App\obj\Debug\net9.0\refint\App.dll
+D:\BILL24\NewAssignment\Logger - Copy\App\obj\Debug\net9.0\App.pdb
+D:\BILL24\NewAssignment\Logger - Copy\App\bin\Debug\net9.0\App.deps.json
+D:\BILL24\NewAssignment\Logger - Copy\App\bin\Debug\net9.0\App.dll
+D:\BILL24\NewAssignment\Logger - Copy\App\bin\Debug\net9.0\App.pdb
+D:\BILL24\NewAssignment\Logger - Copy\App\bin\Debug\net9.0\Domain.dll
+D:\BILL24\NewAssignment\Logger - Copy\App\bin\Debug\net9.0\Domain.pdb
+D:\BILL24\NewAssignment\Logger - Copy\App\obj\Debug\net9.0\App.csproj.Up2Date
+D:\BILL24\NewAssignment\Logger - Copy\App\obj\Debug\net9.0\ref\App.dll
+D:\BILL24\NewAssignment\StaffManagementAPI\App\bin\Debug\net9.0\App.deps.json
+D:\BILL24\NewAssignment\StaffManagementAPI\App\bin\Debug\net9.0\App.dll
+D:\BILL24\NewAssignment\StaffManagementAPI\App\bin\Debug\net9.0\App.pdb
+D:\BILL24\NewAssignment\StaffManagementAPI\App\bin\Debug\net9.0\Domain.dll
+D:\BILL24\NewAssignment\StaffManagementAPI\App\bin\Debug\net9.0\Domain.pdb
+D:\BILL24\NewAssignment\StaffManagementAPI\App\obj\Debug\net9.0\App.csproj.AssemblyReference.cache
+D:\BILL24\NewAssignment\StaffManagementAPI\App\obj\Debug\net9.0\App.GeneratedMSBuildEditorConfig.editorconfig
+D:\BILL24\NewAssignment\StaffManagementAPI\App\obj\Debug\net9.0\Sentry.Attributes.cs
+D:\BILL24\NewAssignment\StaffManagementAPI\App\obj\Debug\net9.0\App.AssemblyInfoInputs.cache
+D:\BILL24\NewAssignment\StaffManagementAPI\App\obj\Debug\net9.0\App.AssemblyInfo.cs
+D:\BILL24\NewAssignment\StaffManagementAPI\App\obj\Debug\net9.0\App.csproj.CoreCompileInputs.cache
+D:\BILL24\NewAssignment\StaffManagementAPI\App\obj\Debug\net9.0\App.csproj.Up2Date
+D:\BILL24\NewAssignment\StaffManagementAPI\App\obj\Debug\net9.0\App.dll
+D:\BILL24\NewAssignment\StaffManagementAPI\App\obj\Debug\net9.0\refint\App.dll
+D:\BILL24\NewAssignment\StaffManagementAPI\App\obj\Debug\net9.0\App.pdb
+D:\BILL24\NewAssignment\StaffManagementAPI\App\obj\Debug\net9.0\ref\App.dll
+D:\BILL24\NewAssignment\StaffManagementAPI\App\bin\Debug\net9.0\App.dll.config

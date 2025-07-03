@@ -1,0 +1,93 @@
+﻿using Microsoft.EntityFrameworkCore;
+using Domain.OutfaceModels;
+using Domain.Interfaces;
+using App.Db;
+using Microsoft.OpenApi.Models;
+using Sentry;
+using App.Helpers.MiddleWares;
+using App.Logics;
+using App.Services;
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Bind AppSetting from configuration
+var envConf = builder.Configuration.GetSection("App");
+var appSetting = new AppSetting();
+envConf.Bind(appSetting);
+builder.Services.Configure<AppSetting>(envConf);
+
+// Sentry
+if (appSetting.EnableSentry)
+{
+    builder.WebHost.UseSentry(o =>
+    {
+        o.Dsn = appSetting.SentrySettings.Dsn; 
+        o.Debug = appSetting.SentrySettings.Debug; 
+        o.TracesSampleRate = appSetting.SentrySettings.TracesSampleRate; 
+        o.Environment = appSetting.SentrySettings.Environment; 
+        o.Release = $"{appSetting.ApiVersion}"; 
+
+        o.MaxRequestBodySize = Sentry.Extensibility.RequestSize.Always;
+        o.IncludeActivityData = appSetting.SentrySettings.IncludeActivityData; 
+        o.AttachStacktrace = appSetting.SentrySettings.AttachStacktrace; 
+    });
+}
+
+// Register DbContext
+builder.Services.AddDbContext<StaffManagementDbContext>(options =>
+    options.UseNpgsql(appSetting.Db.PrimaryConnection));
+
+// Auto migration on startup
+using (var scope = builder.Services.BuildServiceProvider().CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<StaffManagementDbContext>();
+    context.Database.EnsureCreated();
+}
+
+// Register business logic and services
+builder.Services.AddScoped<StaffLogic>();
+builder.Services.AddScoped<ExportService>();
+builder.Services.AddScoped<BankApiLogic>(); // Keep for backward compatibility
+builder.Services.AddScoped<IHttpContextScope, BillerHttpContextScope>();
+
+// Add controllers
+builder.Services.AddControllers();
+
+// Add Swagger/ OpenAPI support
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Staff Management API", Version = "v1" });
+    c.EnableAnnotations();
+});
+
+// Add CORS policy
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+    });
+});
+
+var app = builder.Build();
+
+// Add ErrorHandlingMiddleware to capture all unhandled exceptions
+app.UseMiddleware<ErrorHandlingMiddleware>();
+
+// Enable Swagger middleware
+if (appSetting.EnableSwagger)
+{
+    app.UseSwagger();
+    app.UseSwaggerUI(setup => 
+    {
+        setup.SwaggerEndpoint("/swagger/v1/swagger.json", "Staff Management API v1");
+        setup.RoutePrefix = string.Empty; // Serve Swagger UI at root
+    });
+}
+
+app.UseCors("AllowAll");
+app.UseAuthorization();
+app.MapControllers();
+
+await app.RunAsync();

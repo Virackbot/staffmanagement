@@ -1,0 +1,54 @@
+﻿namespace Domain.OutfaceModels;
+
+public interface IApplicationConfig { }
+
+public class AppSetting : IApplicationConfig
+{
+    public string ApiVersion { get; set; } = "1.0.0.0";
+    public static bool IsDebugMode { get; set; } = false;
+    public string ClientId { get; set; } = string.Empty;
+    public DbConnection Db { get; set; } = new DbConnection();
+    public string IdentityServerUrl { get; set; } = string.Empty;
+    public string RMQUrl { get; set; } = string.Empty;
+    public string RedisUrl { get; set; } = string.Empty;
+    public string DirectDebitRedisUrl { get; set; } = string.Empty;
+    public string DirectDebitRedisPassword { get; set; } = string.Empty;
+
+    public bool AutoMigration { get; set; } = false;
+    public bool EnableSwagger { get; set; } = true;
+
+    public string StaffManagementMonitoringPath { get; set; } = "/v1";
+
+    public string SecurityApiUrl { get; set; } = string.Empty;
+    public string MobileTopUpApiUrl { get; set; } = string.Empty;
+    public string NotificationApiUrl { get; set; } = string.Empty;
+    public string StaffManagementApiUrl { get; set; } = string.Empty;
+    public string SocketApiUrl { get; set; } = string.Empty;
+
+    public int WorkerStartupDelay { get; set; } = 5;
+
+    public static XmlRsaConfig XmlRsaConfig { get; set; } = new XmlRsaConfig();
+    public string PyextensionApiUrl { get; set; } = string.Empty;
+    public string BankGateWayDbConnection { get; set; } = string.Empty;
+    public string S3BucketName { get; set; } = string.Empty;
+    public string ManagementApiUrl { get; set; } = string.Empty;
+}
+
+public class DbConnection
+{
+    public string PrimaryConnection { get; set; } = string.Empty;
+    public string ReadOnlyConnection { get; set; } = string.Empty;
+}
+
+public class DbOptionConst
+{
+    public static int DbMaxRetryCount => 10;
+    public static TimeSpan DbRetryDelay => TimeSpan.FromSeconds(30);
+    public static int DbCommandTimeout => (int)TimeSpan.FromMinutes(10).TotalSeconds;
+}
+
+public record XmlRsaConfig
+{
+    public string PublicKey => @"<RSAKeyValue><Modulus>a+MNKarAirUBWC21zRbiiNIewx1dnHgssNkPHZpWvERcMxPSBLvnWiC/6Jk9OVobm6G8qGwU3vlpzoVFeVIKSjotTbnjVbe3GvcxZrGp5p5iutWgbnlmSCbDdHIHwpDFqPg+lS60phH7IRDBBsdRNlgFHdtYVG4oF9hnu5cwIuOuqvGdDYuucrA9OZLvAqpTfXYQS9VOvxLqtVAe2PMucCc53hQN7IpK4o3V1n3kXGtYikIsm3EHKATWuxtvXDCRQTyzXI3/8Z6dFGi480DWuH5pgwxGgSxs0FeaLv63iqKJ33gV4ohOUQUUsuBk20rgLG1JrhdbxiYU3cy+60PhAdJL7Gun7aGB28jwP/OpIQVkB7YVJ5zh1FdRYbML8x6Gipe1/IQuTcCZDWZCaBl7SlN0iZSjSVnCkASpvfi3g8o+cfjRxuk02Npck9A49c1qJaYcmlHGvRo0Kh6pmm64+bhDR4d6U32qmV1fP1rOI/f+uCo1C8GthdoHvA/ZIOpw7PLrq9KkgQI7JEhBWCBm3JbQ5hstGPsZviSzLCaE5zvN/pVfzfMCl2kLuLAC6Byye1Pzjld1aPXBimufMKH1SSPmkMksRKVnj67Vss8liu1O5bYIASktZAN7p/huo7kxAX6/jhV+nZ1229fq+YG3hhgtanQS9DNX44WKYufURJk=</Modulus><Exponent>AQAB</Exponent></RSAKeyValue>";
+    public string PrivateKey => @"<RSAKeyValue><Modulus>a+MNKarAirUBWC21zRbiiNIewx1dnHgssNkPHZpWvERcMxPSBLvnWiC/6Jk9OVobm6G8qGwU3vlpzoVFeVIKSjotTbnjVbe3GvcxZrGp5p5iutWgbnlmSCbDdHIHwpDFqPg+lS60phH7IRDBBsdRNlgFHdtYVG4oF9hnu5cwIuOuqvGdDYuucrA9OZLvAqpTfXYQS9VOvxLqtVAe2PMucCc53hQN7IpK4o3V1n3kXGtYikIsm3EHKATWuxtvXDCRQTyzXI3/8Z6dFGi480DWuH5pgwxGgSxs0FeaLv63iqKJ33gV4ohOUQUUsuBk20rgLG1JrhdbxiYU3cy+60PhAdJL7Gun7aGB28jwP/OpIQVkB7YVJ5zh1FdRYbML8x6Gipe1/IQuTcCZDWZCaBl7SlN0iZSjSVnCkASpvfi3g8o+cfjRxuk02Npck9A49c1qJaYcmlHGvRo0Kh6pmm64+bhDR4d6U32qmV1fP1rOI/f+uCo1C8GthdoHvA/ZIOpw7PLrq9KkgQI7JEhBWCBm3JbQ5hstGPsZviSzLCaE5zvN/pVfzfMCl2kLuLAC6Byye1Pzjld1aPXBimufMKH1SSPmkMksRKVnj67Vss8liu1O5bYIASktZAN7p/huo7kxAX6/jhV+nZ1229fq+YG3hhgtanQS9DNX44WKYufURJk=</Modulus><Exponent>AQAB</Exponent><P>vhXjT5aVQP/Qqr0/hL6c27BjGoptSxhbDbKMJy8kxYfmgwW3UenCEWWLlJzdMpnkXvh8KYtkXNGXEPnxx/NxEzabTXlTpbHtnXOS3rtjq40COBWGZ+FNueK8Xn6TXUKHxNFbINpCCXg4TjHhmlBjl4cL/fsCgJQ1vvfwtUyBuwO12/JmVo9FJhDZwJHMNm3Wm808vKUVMci+fMwAB8UrI+38Dj+lyECqJtHxA+1bZHP3n+f/45o51zBDkD7JHWoAt4sCqOJmo2JAFCcdKptOpExB4qn0ua1S2zgjam3NMfUVQhgIGSCJ+VWO+d83wBLZQtAZWpowMfFNomPzyVrdAw==</P><Q>kUxMpngS381i3mk7QQFk8D3YXo1JL4QEG+F8CjD4JyO8f0o7yyFocQf4kYG4pzJpVvKPSsrhgiY/Q1R8fxv1AreCgDBjF/7HiMv/vtDMBdv0lZwpvbw5So5q/5oAPAeOYAZs8Q+Z85TKflJRZCS7GVvLkiiZKPG5+7U1ZtkmiwmxbBChCoMiJ+NsqXh9A+D93SJjRHZIyehc6LC8WVSSUPRodW62j8X6TseAZvXh/UtBxHVoJ25EQ2A7mTIiy2DF1P50LHZstwQ9PivhMqr3EwD3uIyPOaGA8/Fm5/LD+eW7ijVmGUJKNrpjzC3AztdianpRUiQPYA7bIprdPEe/Mw==</Q><DP>rKmhIwg7ZyF337+r1N54CS49tzwKbu4et2B54pX2Jt99SYKFtIhLWhYNJd8fJfmX8ZRw5CPT9GQFfswrDV9aVQODKmqMyrPGjQEQZfV9YbTiUSNsRSvouHL2fDcpkMsAHI224y6eUY+8RXsV3GAtNtTa1ceNzFHUSDVblrN6G/AQ30teHj5hp2QjB8Ln5oD7MebJxumFSQV50k5TsLsupqJkFGVIJ5BlfoGxFcoi/CpCwiOw0oOjCo6ysHH3qRpCsHY64kFUzhBO+H9XBP6x/peuOT/8JjUEUFC8Cs7WVwyyVKkTog9mhO9swhg6wePdKc1xWlU4dgUkad+08C/zFQ==</DP><DQ>YpJdye3Z+CURdwvzHAXDIc0DNhop1Wd9liCiExPntj3jSoPlDsjKXyxmMOjNifiESG1kUvxSgwZJkvcFQwKHdOFkUm0BPS0m1yJ2jVB/qVXwl3MLSmIgh/kYk/E5SYBi0bhqPhw0eHCv84ULHKJioDCLacvLJGDhqOblpLGbGWZpDIQ3jLcr+92pQUuxnGkOMPB8YdzRQtE1/tKv5PagEPXOzCRhDCbmyn1EGhWjzEA7DPoNv/ppqz/lDuhZfJpZfEdoLyXkWUEx/zSrocEkv6q/ZF9PZ2yu3FAgXSlwVN/LHFdfvbEgQgKvY7yCepDafpwfAVffam6Jse9YOeX+yw==</DQ><InverseQ>BwKlhVc03oEiyAzzU6cEM4B9Rd2loW9TvBqAYA9w/r2SAK0Ahwcie2GDiWBOjTCQ+zu65aYnbv/Vt2KNHLQBd2E7SWiUgNZYyVnIwpshlGo4TlXPUZbW0BuWc1MkU3Iv3KwhbBs/1AcGWXZJaPB7cHg2fNrhv7wNgrytqh3nbSjBEuegJbX6ovFTJ5gw7J/DVuOmRnG+8LIdHK7ma/LCaUWRTEQQfBUho5wm58+/4h4n+XCdJXTgxjOmlSTyogUFaB46ARaC3kZNdHnCQdTKtpk5zEe+6TA7Lqlu2+rYvrWQkY+UZjHlu6JO1TitVRxBUy/80ZJOS2YmTbAJU4uL0w==</InverseQ><D>Fve/VZ+EXgMqxhr1GTRGBdq1sdQOmcD7wqpzDVpOHMZw2m7dxyQ5nHZcZKg64HrOZdOI1lIsH0v5un2kzK8qgaLhAisQuq7hzFvTqIkqIm6VljDkdqBhpfqaoa+k90bazZ4LtLa8vp4VWHS4ozjLkUYr0K9hnpfU8T6g1s7Y8JSIGtxVEw0plkDux9MADxEztQHtdjdzDDp6vR7Rcl5TBI1VRHIAhNrsFk8btw4WD5bKwqRT2sO1Qk/FZw/wJTAxvDGv/YQ9eLLLvgyNUzv6ekxvKfbzC4zpnXEI4fhYGqt/rpNiFVfvVFBAl9QtpIHMN6kMhoNyhjyVNKLiAjPxMqqsF/LxLlq4Gxl5WwDrIDqbWV+ilPM21jtmlCeG7ZKvh53GmznZwSb7Hb0J4ziriBwBqVg3DQaXIfDpf43SvIAmmcSWQtsAxpkRk6+2GHbdyZtJJ5E/NMRtP6i/NzU45jn8KKZemxJGekdcWsVOLlF1Hduu2q5JvyvtnP7EtmpIxawc2uVStSYr8A/eqM1TUGcMDmB+ZdD59au/awwcREiU37fkjsrv2Ej7izCsDSy/nMnkrUKX7We8iSkNsJO6+RJAP8YovXW6RK5tJP0ZCyL0OC99aaqONyTsVmODm297aeKTaTZwM/GWdwfWu1z1V2Jp8Qn+fnXat2dGT0hYSgE=</D></RSAKeyValue>";
+}

@@ -1,0 +1,19 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using Domain.Models;
+using System.Threading.Tasks;
+
+namespace Domain.Controllers
+{
+    [ApiController]
+    [Route("bank")]
+    public class BaseController : ControllerBase
+    {
+        [HttpPost]
+        public async Task<IActionResult> Post([FromBody] BankApi bankApi)
+        {
+            // Add your logic here (e.g., save to DB, call service, etc.)
+            await Task.CompletedTask;
+            return Ok(new { message = "success" });
+        }
+    }
+}

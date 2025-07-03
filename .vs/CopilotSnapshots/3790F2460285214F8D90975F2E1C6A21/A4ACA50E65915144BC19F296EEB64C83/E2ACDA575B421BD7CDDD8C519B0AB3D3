@@ -1,0 +1,117 @@
+﻿### Staff Management API Test Requests
+
+### 1. Create Staff
+POST http://localhost:5141/api/staff
+Content-Type: application/json
+
+{
+  "staffId": "STAFF001",
+  "fullName": "John Doe",
+  "birthday": "1990-05-15",
+  "gender": 1
+}
+
+###
+
+### 2. Create Another Staff
+POST http://localhost:5141/api/staff
+Content-Type: application/json
+
+{
+  "staffId": "STAFF002",
+  "fullName": "Jane Smith",
+  "birthday": "1985-08-22",
+  "gender": 2
+}
+
+###
+
+### 3. Create Third Staff
+POST http://localhost:5141/api/staff
+Content-Type: application/json
+
+{
+  "staffId": "STAFF003",
+  "fullName": "Mike Johnson",
+  "birthday": "1992-12-10",
+  "gender": 1
+}
+
+###
+
+### 4. Get All Staff
+GET http://localhost:5141/api/staff
+
+###
+
+### 5. Get Staff by ID
+GET http://localhost:5141/api/staff/STAFF001
+
+###
+
+### 6. Update Staff
+PUT http://localhost:5141/api/staff/STAFF001
+Content-Type: application/json
+
+{
+  "fullName": "John Doe Updated",
+  "birthday": "1990-05-15",
+  "gender": 1
+}
+
+###
+
+### 7. Search Staff by Name
+GET http://localhost:5141/api/staff/search?fullName=John
+
+###
+
+### 8. Search Staff by Gender
+GET http://localhost:5141/api/staff/search?gender=1
+
+###
+
+### 9. Search Staff by Age Range
+GET http://localhost:5141/api/staff/search?minAge=30&maxAge=40
+
+###
+
+### 10. Search Staff by Birthday Range
+GET http://localhost:5141/api/staff/search?birthdayFrom=1990-01-01&birthdayTo=1995-12-31
+
+###
+
+### 11. Advanced Search (Multiple Filters)
+GET http://localhost:5141/api/staff/search?fullName=John&gender=1&minAge=30&maxAge=40
+
+###
+
+### 12. Export All Staff to Excel
+GET http://localhost:5141/api/staff/export/excel
+
+###
+
+### 13. Export All Staff to PDF
+GET http://localhost:5141/api/staff/export/pdf
+
+###
+
+### 14. Export Search Results to Excel
+GET http://localhost:5141/api/staff/export/excel?gender=1&minAge=30
+
+###
+
+### 15. Export Search Results to PDF
+GET http://localhost:5141/api/staff/export/pdf?gender=2
+
+###
+
+### 16. Delete Staff
+DELETE http://localhost:5141/api/staff/STAFF003
+
+###
+
+### 17. Try to Get Deleted Staff (Should return 404)
+GET http://localhost:5141/api/staff/STAFF003
+
+###

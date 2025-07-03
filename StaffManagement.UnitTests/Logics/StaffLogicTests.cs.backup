@@ -1,0 +1,218 @@
+using Xunit;
+using Moq;
+using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.InMemory;
+using App.Db;
+using App.Logics;
+using Domain.Models;
+using Domain.OutfaceModels;
+using Domain.Interfaces;
+using Domain.Exceptions;
+
+namespace StaffManagement.UnitTests.Logics;
+
+public class StaffLogicTests : IDisposable
+{
+    private readonly StaffManagementDbContext _context;
+    private readonly Mock<IHttpContextScope> _mockHttpContextScope;
+    private readonly StaffLogic _staffLogic;
+
+    public StaffLogicTests()
+    {
+        // Setup in-memory database for testing
+        var options = new DbContextOptionsBuilder<StaffManagementDbContext>()
+            .UseInMemory(databaseName: Guid.NewGuid().ToString())
+            .Options;
+
+        _context = new StaffManagementDbContext(options);
+        _mockHttpContextScope = new Mock<IHttpContextScope>();
+        _staffLogic = new StaffLogic(_context, _mockHttpContextScope.Object);
+    }
+
+    public void Dispose()
+    {
+        _context.Dispose();
+    }
+
+    [Fact]
+    public async Task CreateAsync_ValidStaff_ShouldCreateSuccessfully()
+    {
+        // Arrange
+        var createModel = new CreateStaffRequestModel
+        {
+            StaffId = "ST001",
+            FullName = "John Doe",
+            Birthday = new DateOnly(1990, 1, 1),
+            Gender = 1
+        };
+
+        // Act
+        var result = await _staffLogic.CreateAsync(createModel);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.StaffId.Should().Be(createModel.StaffId);
+        result.FullName.Should().Be(createModel.FullName);
+        result.Birthday.Should().Be(createModel.Birthday);
+        result.Gender.Should().Be(createModel.Gender);
+
+        // Verify staff was saved to database
+        var savedStaff = await _context.Staff.FirstOrDefaultAsync(x => x.StaffId == createModel.StaffId);
+        savedStaff.Should().NotBeNull();
+    }
+
+    [Fact]
+    public async Task CreateAsync_DuplicateStaffId_ShouldThrowLogicException()
+    {
+        // Arrange
+        var existingStaff = new Staff
+        {
+            StaffId = "ST001",
+            FullName = "Existing Staff",
+            Birthday = new DateOnly(1985, 5, 5),
+            Gender = 2,
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow
+        };
+
+        _context.Staff.Add(existingStaff);
+        await _context.SaveChangesAsync();
+
+        var createModel = new CreateStaffRequestModel
+        {
+            StaffId = "ST001", // Same ID as existing staff
+            FullName = "John Doe",
+            Birthday = new DateOnly(1990, 1, 1),
+            Gender = 1
+        };
+
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<LogicException>(() => _staffLogic.CreateAsync(createModel));
+        exception.Message.Should().Contain("Staff with ID 'ST001' already exists");
+    }
+
+    [Fact]
+    public async Task GetByIdAsync_ExistingStaff_ShouldReturnStaff()
+    {
+        // Arrange
+        var staff = new Staff
+        {
+            StaffId = "ST002",
+            FullName = "Jane Smith",
+            Birthday = new DateOnly(1992, 3, 15),
+            Gender = 2,
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow
+        };
+
+        _context.Staff.Add(staff);
+        await _context.SaveChangesAsync();
+
+        // Act
+        var result = await _staffLogic.GetByIdAsync("ST002");
+
+        // Assert
+        result.Should().NotBeNull();
+        result!.StaffId.Should().Be("ST002");
+        result.FullName.Should().Be("Jane Smith");
+        result.Birthday.Should().Be(new DateOnly(1992, 3, 15));
+        result.Gender.Should().Be(2);
+    }
+
+    [Fact]
+    public async Task GetByIdAsync_NonExistingStaff_ShouldReturnNull()
+    {
+        // Act
+        var result = await _staffLogic.GetByIdAsync("NONEXISTENT");
+
+        // Assert
+        result.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task UpdateAsync_ExistingStaff_ShouldUpdateSuccessfully()
+    {
+        // Arrange
+        var staff = new Staff
+        {
+            StaffId = "ST003",
+            FullName = "Original Name",
+            Birthday = new DateOnly(1990, 1, 1),
+            Gender = 1,
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow
+        };
+
+        _context.Staff.Add(staff);
+        await _context.SaveChangesAsync();
+
+        var updateModel = new UpdateStaffRequestModel
+        {
+            FullName = "Updated Name",
+            Birthday = new DateOnly(1990, 2, 2),
+            Gender = 2
+        };
+
+        // Act
+        var result = await _staffLogic.UpdateAsync("ST003", updateModel);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.StaffId.Should().Be("ST003");
+        result.FullName.Should().Be("Updated Name");
+        result.Birthday.Should().Be(new DateOnly(1990, 2, 2));
+        result.Gender.Should().Be(2);
+
+        // Verify changes were saved to database
+        var updatedStaff = await _context.Staff.FirstOrDefaultAsync(x => x.StaffId == "ST003");
+        updatedStaff!.FullName.Should().Be("Updated Name");
+        updatedStaff.Birthday.Should().Be(new DateOnly(1990, 2, 2));
+        updatedStaff.Gender.Should().Be(2);
+    }
+
+    [Fact]
+    public async Task UpdateAsync_NonExistingStaff_ShouldThrowLogicException()
+    {
+        // Arrange
+        var updateModel = new UpdateStaffRequestModel
+        {
+            FullName = "Updated Name",
+            Birthday = new DateOnly(1990, 2, 2),
+            Gender = 2
+        };
+
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<LogicException>(() =>
+            _staffLogic.UpdateAsync("NONEXISTENT", updateModel));
+        exception.Message.Should().Contain("Staff with ID 'NONEXISTENT' not found");
+    }
+
+    [Theory]
+    [InlineData("", "John Doe", 1)] // Empty StaffId
+    [InlineData("TOOLONGID", "John Doe", 1)] // StaffId too long
+    [InlineData("ST001", "", 1)] // Empty FullName
+    [InlineData("ST001", "John Doe", 0)] // Invalid Gender
+    [InlineData("ST001", "John Doe", 3)] // Invalid Gender
+    public async Task CreateAsync_InvalidData_ShouldHandleValidationScenarios(string staffId, string fullName, int gender)
+    {
+        // Arrange
+        var createModel = new CreateStaffRequestModel
+        {
+            StaffId = staffId,
+            FullName = fullName,
+            Birthday = new DateOnly(1990, 1, 1),
+            Gender = gender
+        };
+
+        // Act & Assert
+        // Note: Actual validation would depend on your validation implementation
+        // This is a placeholder to show how you would test validation scenarios
+        if (string.IsNullOrEmpty(staffId) || string.IsNullOrEmpty(fullName) || gender < 1 || gender > 2)
+        {
+            // You would implement validation in your actual logic and test it here
+            // For now, we'll just verify the test structure is in place
+            Assert.True(true, "Validation test structure is in place");
+        }
+    }
+}

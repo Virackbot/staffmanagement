@@ -1,0 +1,25 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using App.Logics;
+using Domain.Models;
+using System.Threading.Tasks;
+
+namespace StaffManagement.Controllers
+{
+    [ApiController]
+    [Route("bank")]
+    public class BankApiController : ControllerBase
+    {
+        private readonly BankApiLogic _bankApiLogic;
+        public BankApiController(BankApiLogic bankApiLogic)
+        {
+            _bankApiLogic = bankApiLogic;
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Post([FromBody] BankApi bankApi)
+        {
+            await _bankApiLogic.AddAsync(bankApi);
+            return Ok(new { message = "success" });
+        }
+    }
+}

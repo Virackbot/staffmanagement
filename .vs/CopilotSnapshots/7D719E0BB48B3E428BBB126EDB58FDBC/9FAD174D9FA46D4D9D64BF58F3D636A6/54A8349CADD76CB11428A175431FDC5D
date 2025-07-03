@@ -1,0 +1,29 @@
+﻿using System;
+
+namespace Domain.Models
+{
+    public class BankApi
+    {
+        public int Id { get; set; } // id (int4, not null, key)
+        public string? Method { get; set; } // method (varchar, not null)
+        public string? StatusCode { get; set; } // status_code (varchar, not null)
+        public string? Ip { get; set; } // ip (varchar, not null)
+        public string? Url { get; set; } // url (varchar, not null)
+        public string? Header { get; set; } // header (varchar, not null)
+        public string? Payload { get; set; } // payload (varchar, not null)
+        public DateTime? RequestDate { get; set; } // request_date (timestamp, not null)
+        public DateTime? ResponseDate { get; set; } // response_date (timestamp, not null)
+        public int? Elapse { get; set; } // elapse (int4, not null)
+        public string? Response { get; set; } // response (varchar)
+        public string? BankId { get; set; } // bank_id (varchar, not null)
+        public string? BankRef { get; set; } // bank_ref (varchar)
+        public string? BillerCode { get; set; } // biller_code (varchar)
+        public string? BillCode { get; set; } // bill_code (varchar)
+        public string? CustomerCode { get; set; } // customer_code (varchar)
+        public string? TranId { get; set; } // tran_id (varchar)
+        public DateTime? TranDate { get; set; } // tran_date (timestamp)
+        public string? Code { get; set; } // code (varchar)
+        public string? Message { get; set; } // message (varchar)
+        public string? Operation { get; set; } // operation (varchar)
+    }
+}

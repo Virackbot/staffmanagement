@@ -1,0 +1,160 @@
+﻿using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
+using System.Text.Json.Serialization;
+using App.Db;
+using Microsoft.EntityFrameworkCore;
+using Domain.Models;
+using Domain.Interfaces;
+
+namespace App.Logics;
+
+/// <summary>
+/// Base logic class providing core database and validation functionality
+/// </summary>
+public class MasterLogic
+{
+    protected readonly StaffManagementDbContext _db;
+    protected readonly IHttpContextScope _current;
+
+    public MasterLogic(StaffManagementDbContext db, IHttpContextScope current)
+    {
+        _db = db;
+        _current = current;
+    }
+
+    public async Task<T> WrapAsync<T>(Func<Task<T>> action, int timeout = 10 * 60)
+        => await _db.WrapAsync(action, timeout);
+
+    public TLogic GetLogic<TLogic>() where TLogic : class
+    {
+        return _current.Provider.GetService<TLogic>()
+            ?? throw new Exception($"Service {nameof(TLogic)} not registered.");
+    }
+
+    protected List<string> ValidateRequest<T>(T payload, List<string> fieldNames)
+    {
+        var missingFields = new List<string>();
+
+        foreach (var fieldName in fieldNames)
+        {
+            var property = typeof(T).GetProperty(fieldName);
+            if (property != null)
+            {
+                var jsonPropertyAttribute = property.GetCustomAttribute<JsonPropertyNameAttribute>();
+                string displayName = jsonPropertyAttribute?.Name ?? property.Name;
+
+                var value = property.GetValue(payload);
+                if (IsRequiredField(value))
+                {
+                    missingFields.Add(displayName);
+                }
+            }
+        }
+
+        return missingFields;
+    }
+
+    private static bool IsRequiredField(object? value)
+    {
+        return value switch
+        {
+            null => true,
+            string s => string.IsNullOrEmpty(s),
+            DateTime dt => dt == default || dt == DateTime.MinValue,
+            decimal d => d == 0m,
+            double d => d == 0d,
+            float f => f == 0f,
+            _ => false
+        };
+    }
+}
+
+public class TDbLogic<T> : MasterLogic where T : TBaseModel<string>
+{
+    protected readonly bool _hasActiveColumn;
+
+    public TDbLogic(StaffManagementDbContext db, IHttpContextScope current) : base(db, current)
+    {
+        _hasActiveColumn = typeof(T).GetProperties().Any(x => x.Name == "IsActive");
+    }
+
+    public virtual IQueryable<T> All()
+        => _db.Set<T>().Where(x => !_hasActiveColumn || x.IsActive == true).AsNoTracking();
+
+    public virtual IQueryable<T> AllWithInactive()
+        => _db.Set<T>().AsNoTracking();
+
+    public virtual async Task<T?> FindAsync(string? id)
+        => id == null ? default : await _db.Set<T>().FindAsync(id);
+
+    public virtual async Task<T> AddOrUpdateAsync(T entity)
+    {
+        string? id = entity is BaseModel baseModel ? baseModel.Id : null;
+        return await (await FindAsync(id!) == null ? AddAsync(entity) : UpdateAsync(entity));
+    }
+
+    public virtual async Task<T> AddAsync(T entity)
+    {
+        if (await IsExistsAsync(entity))
+            throw new Exception("Entity already exists");
+
+        if (entity is BaseModel baseModel && string.IsNullOrEmpty(baseModel.Id))
+            baseModel.Id = Guid.NewGuid().ToString();
+
+        entity.CreatedBy = _current?.FullName ?? "-";
+        entity.CreatedDate = DateTime.Now;
+        
+        if (_hasActiveColumn)
+            SetActive(entity, true);
+
+        await _db.Set<T>().AddAsync(entity);
+        await _db.SaveChangesAsync();
+        
+        return entity;
+    }
+
+    public virtual async Task<T> UpdateAsync(T entity)
+    {
+        if (await IsExistsAsync(entity))
+            throw new Exception("Entity already exists");
+
+        //entity.UpdatedBy = _current?.FullName ?? "-";
+        //entity.UpdatedDate = DateTime.Now;
+
+        _db.Entry(entity).State = EntityState.Modified;
+        await _db.SaveChangesAsync();
+
+        return entity;
+    }
+
+    public virtual async Task<T> RemoveAsync(string id)
+    {
+        var entity = await FindAsync(id) ?? throw new Exception("Entity not found");
+        return await RemoveAsync(entity);
+    }
+
+    public virtual async Task<T> RemoveAsync(T entity)
+    {
+        if (_hasActiveColumn)
+        {
+            SetActive(entity, false);
+            _db.Entry(entity).State = EntityState.Modified;
+        }
+        else
+        {
+            _db.Set<T>().Remove(entity);
+        }
+        
+        await _db.SaveChangesAsync();
+        return entity;
+    }
+
+    public virtual Task<bool> IsExistsAsync(T entity) => Task.FromResult(false);
+
+    private void SetActive(T obj, bool active)
+    {
+        if (!_hasActiveColumn) return;
+        var property = typeof(T).GetProperties().FirstOrDefault(x => x.Name == "IsActive");
+        property?.SetValue(obj, active);
+    }
+}

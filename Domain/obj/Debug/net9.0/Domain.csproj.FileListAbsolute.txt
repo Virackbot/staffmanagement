@@ -1,0 +1,36 @@
+D:\BILL24\Projects\StaffManagement\Domain\bin\Debug\net9.0\Domain.deps.json
+D:\BILL24\Projects\StaffManagement\Domain\bin\Debug\net9.0\Domain.dll
+D:\BILL24\Projects\StaffManagement\Domain\bin\Debug\net9.0\Domain.pdb
+D:\BILL24\Projects\StaffManagement\Domain\obj\Debug\net9.0\Domain.csproj.AssemblyReference.cache
+D:\BILL24\Projects\StaffManagement\Domain\obj\Debug\net9.0\Domain.GeneratedMSBuildEditorConfig.editorconfig
+D:\BILL24\Projects\StaffManagement\Domain\obj\Debug\net9.0\Domain.AssemblyInfoInputs.cache
+D:\BILL24\Projects\StaffManagement\Domain\obj\Debug\net9.0\Domain.AssemblyInfo.cs
+D:\BILL24\Projects\StaffManagement\Domain\obj\Debug\net9.0\Domain.csproj.CoreCompileInputs.cache
+D:\BILL24\Projects\StaffManagement\Domain\obj\Debug\net9.0\Domain.dll
+D:\BILL24\Projects\StaffManagement\Domain\obj\Debug\net9.0\refint\Domain.dll
+D:\BILL24\Projects\StaffManagement\Domain\obj\Debug\net9.0\Domain.pdb
+D:\BILL24\Projects\StaffManagement\Domain\obj\Debug\net9.0\ref\Domain.dll
+D:\BILL24\NewAssignment\Logger - Copy\Domain\bin\Debug\net9.0\Domain.deps.json
+D:\BILL24\NewAssignment\Logger - Copy\Domain\bin\Debug\net9.0\Domain.dll
+D:\BILL24\NewAssignment\Logger - Copy\Domain\bin\Debug\net9.0\Domain.pdb
+D:\BILL24\NewAssignment\Logger - Copy\Domain\obj\Debug\net9.0\Domain.csproj.AssemblyReference.cache
+D:\BILL24\NewAssignment\Logger - Copy\Domain\obj\Debug\net9.0\Domain.GeneratedMSBuildEditorConfig.editorconfig
+D:\BILL24\NewAssignment\Logger - Copy\Domain\obj\Debug\net9.0\Domain.AssemblyInfoInputs.cache
+D:\BILL24\NewAssignment\Logger - Copy\Domain\obj\Debug\net9.0\Domain.AssemblyInfo.cs
+D:\BILL24\NewAssignment\Logger - Copy\Domain\obj\Debug\net9.0\Domain.csproj.CoreCompileInputs.cache
+D:\BILL24\NewAssignment\Logger - Copy\Domain\obj\Debug\net9.0\Domain.dll
+D:\BILL24\NewAssignment\Logger - Copy\Domain\obj\Debug\net9.0\refint\Domain.dll
+D:\BILL24\NewAssignment\Logger - Copy\Domain\obj\Debug\net9.0\Domain.pdb
+D:\BILL24\NewAssignment\Logger - Copy\Domain\obj\Debug\net9.0\ref\Domain.dll
+D:\BILL24\NewAssignment\StaffManagementAPI\Domain\bin\Debug\net9.0\Domain.deps.json
+D:\BILL24\NewAssignment\StaffManagementAPI\Domain\bin\Debug\net9.0\Domain.dll
+D:\BILL24\NewAssignment\StaffManagementAPI\Domain\bin\Debug\net9.0\Domain.pdb
+D:\BILL24\NewAssignment\StaffManagementAPI\Domain\obj\Debug\net9.0\Domain.csproj.AssemblyReference.cache
+D:\BILL24\NewAssignment\StaffManagementAPI\Domain\obj\Debug\net9.0\Domain.GeneratedMSBuildEditorConfig.editorconfig
+D:\BILL24\NewAssignment\StaffManagementAPI\Domain\obj\Debug\net9.0\Domain.AssemblyInfoInputs.cache
+D:\BILL24\NewAssignment\StaffManagementAPI\Domain\obj\Debug\net9.0\Domain.AssemblyInfo.cs
+D:\BILL24\NewAssignment\StaffManagementAPI\Domain\obj\Debug\net9.0\Domain.csproj.CoreCompileInputs.cache
+D:\BILL24\NewAssignment\StaffManagementAPI\Domain\obj\Debug\net9.0\Domain.dll
+D:\BILL24\NewAssignment\StaffManagementAPI\Domain\obj\Debug\net9.0\refint\Domain.dll
+D:\BILL24\NewAssignment\StaffManagementAPI\Domain\obj\Debug\net9.0\Domain.pdb
+D:\BILL24\NewAssignment\StaffManagementAPI\Domain\obj\Debug\net9.0\ref\Domain.dll

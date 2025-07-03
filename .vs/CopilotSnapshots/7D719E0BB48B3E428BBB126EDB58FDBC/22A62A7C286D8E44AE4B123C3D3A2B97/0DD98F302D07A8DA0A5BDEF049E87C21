@@ -1,0 +1,484 @@
+﻿using App.Db;
+using Domain;
+using Bill24PG.Domain.Helpers;
+using Bill24PG.Domain.Models;
+using Domain.Models.OutfaceModels;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
+using System.Runtime.ConstrainedExecution;
+using System.Text.Json.Serialization;
+namespace Bill24PG.App.Logics;
+
+public class MasterLogic
+{
+    protected readonly StaffManagementDbContext _db;
+
+    protected readonly IHttpContextScope _current;
+    public int _cacheDuration = 1 * 60 * 60;
+    public bool _enableCache = false;
+    public virtual bool SaveAuditTrail { get; set; } = false;
+
+    public static string NewGuid => Guid.NewGuid().ToString();
+
+    public MasterLogic(StaffManagementDbContext db, IHttpContextScope current)
+    {
+        _db = db;
+        _current = current;
+    }
+
+    public async Task<T> WrapAsync<T>(Func<Task<T>> action, int timeout = 10 * 60)
+        => await _db.WrapAsync(action, timeout);
+
+    public TLogic GetLogic<TLogic>() where TLogic : class
+    {
+        return _current.Provider.GetService<TLogic>()
+            ?? throw new LogicException($"Service {nameof(TLogic)} not Injected...!");
+    }
+
+    public List<string> ValidateRequest<T>(T payload, List<string> fieldNames)
+    {
+        List<string> missingFields = new List<string>();
+
+        foreach (var fieldName in fieldNames)
+        {
+            var property = typeof(T).GetProperty(fieldName);
+            if (property != null)
+            {
+                var jsonPropertyAttribute = property.GetCustomAttribute<JsonPropertyNameAttribute>();
+                string displayName = jsonPropertyAttribute?.Name ?? property.Name;
+
+                var value = property.GetValue(payload);
+                if (IsRequiredField(value))
+                {
+                    missingFields.Add(displayName);
+                }
+            }
+        }
+
+        return missingFields;
+    }
+
+    private bool IsRequiredField(object? value)
+    {
+        if (value == null) return true;
+
+        if (value is string stringValue)
+        {
+            return string.IsNullOrEmpty(stringValue);
+        }
+
+        if (value is decimal decimalValue)
+        {
+            return decimalValue == 0m;
+        }
+
+        if (value is double doubleValue)
+        {
+            return doubleValue == 0d;
+        }
+
+        if (value is float floatValue)
+        {
+            return floatValue == 0f;
+        }
+
+        if (value is DateTime dateTimeValue)
+        {
+            return dateTimeValue == default || dateTimeValue == DateTime.MinValue;
+        }
+
+        return false;
+    }
+
+    protected virtual bool MoreIgnoreAuditTrailColumn(PropertyInfo prop)
+    {
+        return false;
+    }
+}
+
+
+
+public class TDbLogic<T>
+    : MasterLogic where T
+    : TBaseModel<string>
+{
+    readonly bool _hasActiveColumn = false;
+    public TDbLogic(StaffManagementDbContext db, IHttpContextScope current) : base(db, current)
+    {
+        _hasActiveColumn = typeof(T).GetProperties().Any(x => x.Name == "IsActive");
+    }
+    public async Task<T?> GetCacheAsync(string key, Func<Task<T?>> getter)
+    {
+        T? entity = null;
+        if (_enableCache && _current.Cache != null)
+        {
+            entity = await _current.Cache.GetAsync<T>(key);
+        }
+        if (entity == null)
+        {
+            entity = await getter();
+            if (_enableCache
+                && entity != null
+                && _current.Cache != null)
+            {
+                await _current.Cache.SetAsync(key, entity);
+            }
+        }
+        return entity;
+    }
+
+    public virtual IQueryable<T> All()
+    {
+        return _db.Set<T>().Where(x => x.IsActive == true).AsNoTracking();
+    }
+    public virtual IQueryable<T> AllWithInactive()
+    {
+        return _db.Set<T>().AsNoTracking();
+    }
+    public virtual IQueryable<T> Search(ISearchModel model)
+    {
+        return All().AsNoTracking();
+    }
+
+    public virtual async Task<List<T>> SearchAsync(ISearchModel model)
+    {
+        return await All().ToListAsync();
+    }
+
+    public virtual async Task<T?> FindAsync(string? id)
+    {
+        if (id is null)
+        {
+            return default;
+        }
+        return await _db.Set<T>().FindAsync(id);
+    }
+
+    public virtual async Task<T> AddOrUpdateAsync(T entity)
+    {
+        string? id = null;
+        if (entity is BaseModel baseModel
+            && !string.IsNullOrEmpty(baseModel.Id))
+        {
+            id = baseModel.Id;
+        }
+
+        var old = await FindAsync(id!);
+        if (old == null)
+        {
+            await AddAsync(entity);
+        }
+        else
+        {
+            await UpdateAsync(entity);
+        }
+        return entity;
+    }
+
+    public virtual async Task<T> AddAsync(T entity)
+    {
+        if (await IsExistsAsync(entity))
+        {
+            throw new UniqueException(model: entity);
+        }
+        _db.Entry(entity).State = EntityState.Detached;
+        if (entity is BaseModel baseModel
+            && string.IsNullOrEmpty(baseModel.Id))
+        {
+            baseModel.Id = NewGuid;
+        }
+        entity.CreatedBy = _current?.FullName ?? "-";
+        entity.CreatedDate = DateTime.Now;
+        SetActive(entity, true);
+        _db.Entry(entity).State = EntityState.Added;
+        await _db.SaveChangesAsync();
+        if (SaveAuditTrail)
+        {
+            await SaveAuditTrailAsync(oldEntity: null, entity: entity, flag: ChangeLogAction.Add, getMoreChangeLog: true);
+        }
+        return entity;
+    }
+
+    protected virtual async Task<List<ChangeLog>> GetManualChangeLogAsync(T? oldEntity, T? newEntity)
+    {
+        return await Task.FromResult(new List<ChangeLog>());
+    }
+
+    protected virtual async Task SaveAuditTrailAsync(T? oldEntity, T entity, ChangeLogAction flag, bool getMoreChangeLog = true, string tableDisplay = "")
+    {
+        var changeLogs = ToChangeLog(oldEntity, entity);
+        if (getMoreChangeLog)
+        {
+            var moreChangeLog = await GetManualChangeLogAsync(oldEntity, entity);
+            if (moreChangeLog?.Any() == true)
+            {
+                changeLogs.AddRange(moreChangeLog);
+            }
+        }
+        
+        if (changeLogs?.Any() == true && _current?.Queue != null)
+        {
+            if (entity is BaseModel baseModel
+            && !string.IsNullOrEmpty(baseModel.Id))
+            {
+                var auditTrail = new AuditTrail()
+                {
+                    UserId = _current.UserId,
+                    SessionId = Guid.NewGuid(),
+                    Source = Security.Domain.Enmus.AuditTrailSource.PaymentGateway,
+                    RefId = _current.BusinessProfileId,
+                    ClientId = _current.AppSetting?.ClientId ?? string.Empty,
+                    ClientAddress = _current.ClientInfo?.IpAddress ?? string.Empty,
+                    //ClientName = (_current?.ClientInfo?.UserAgent?.Length > 0)
+    //? _current.ClientInfo.UserAgent.Substring(0, Math.Min(_current.ClientInfo.UserAgent.Length, 50))
+    //: string.Empty,
+                ClientName = string.Empty,
+                OperatorName = flag.ToString(),
+                    OperatorGroup = string.Empty,
+                    TableName = entity?.GetType().FullName ?? string.Empty,
+                    TableShortName = entity?.GetType().Name ?? string.Empty,
+                    TablePK = baseModel.Id,
+                    TableValue = entity?.ToString() ?? string.Empty,
+                    UserName = _current.FullName,
+                    OldObjectJson = oldEntity == null ? string.Empty : JsonHelper.SerializeObject(oldEntity),
+                    NewObjectJson = JsonHelper.SerializeObject(entity),
+                    ChangeJson = JsonHelper.SerializeObject(changeLogs),
+                    TransDate = DateTime.Now,
+                    CreatedBy = _current.FullName,
+                    CreatedDate = DateTime.Now,
+                    IsActive = true,
+                };
+                await _current.Queue.AddAsync(auditTrail, customInfo: QueueHelper.AUDIT_TRAIL_OUTBOUND_QUEUE_INFO);
+            }
+        }
+    }
+
+    protected List<ChangeLog> ToChangeLog(object? oldEntity, object entity)
+    {
+        var lstChangeLog = new List<ChangeLog>();
+        var oldProp = oldEntity?.GetType()?.GetProperties();
+        foreach (var prop in entity.GetType().GetProperties())
+        {
+            if (BaseDomainHelper.DefaultColumnNotTrack(prop)) continue;
+            if (MoreIgnoreAuditTrailColumn(prop)) continue;
+            var changeLog = new ChangeLog();
+            if (oldEntity == null && entity != null)
+            {
+                changeLog.DisplayName = prop.Name;
+                changeLog.OldValue = string.Empty;
+                changeLog.NewValue = AuditTrailHelper.ChangeLogFormats(prop.GetValue(entity));
+                lstChangeLog.Add(changeLog);
+            }
+            else if (oldProp != null)
+            {
+                var oldValue = oldProp?.FirstOrDefault(x => x.Name == prop.Name)?.GetValue(oldEntity);
+                var newValue = prop.GetValue(entity);
+                if (!(oldValue?.Equals(newValue) ?? (newValue == null)))
+                {
+                    var old = oldProp?.FirstOrDefault(x => x.Name == prop.Name)?.GetValue(oldEntity);
+                    var newss = prop.GetValue(entity);
+                    changeLog.DisplayName = prop.Name;
+                    changeLog.OldValue = AuditTrailHelper.ChangeLogFormats(oldProp?.FirstOrDefault(x => x.Name == prop.Name)?.GetValue(oldEntity));
+                    changeLog.NewValue = AuditTrailHelper.ChangeLogFormats(prop.GetValue(entity));
+                    lstChangeLog.Add(changeLog);
+                }
+            }
+            //else if (oldProp != null && !oldProp.FirstOrDefault(x => x.Name == prop.Name).GetValue(oldEntity)
+            //    .Equals(prop.GetValue(entity)))
+            //{
+            //    var old = oldProp.FirstOrDefault(x => x.Name == prop.Name).GetValue(oldEntity);
+            //    var newss = prop.GetValue(entity);
+            //    changeLog.DisplayText = prop.Name;
+            //    changeLog.OldValue = BaseFormats.ChangeLogFormats(oldProp.FirstOrDefault(x => x.Name == prop.Name).GetValue(oldEntity));
+            //    changeLog.NewValue = BaseFormats.ChangeLogFormats(prop.GetValue(entity));
+            //    lstChangeLog.Add(changeLog);
+            //}
+        }
+        //var moreChangeLog = GetManualChangeLog(oldEntity, entity);
+        //if ((moreChangeLog?.Count() ?? 0) > 0) lstChangeLog.AddRange(moreChangeLog);
+        return lstChangeLog;
+    }
+
+    private async Task<List<ChangeLog>> LogByIdAsync<TEntity, Key>(List<ChangeLog> changeLogs, Key oldId, Key newId, string text = "", string allText = "")
+        where TEntity : TBaseModel<Key>, new()
+        where Key: notnull
+
+    {
+        if (!oldId.Equals(newId))
+        {
+            var oldEntity = await _db.Set<TEntity>().FindAsync(oldId);
+            var entity = await _db.Set<TEntity>().FindAsync(newId);
+
+            var change = new ChangeLog()
+            {
+                DisplayName = string.IsNullOrEmpty(text) ? typeof(TEntity).Name : text,
+                OldValue = oldEntity?.ToString() ?? (oldId.Equals(0) ? allText : string.Empty),
+                NewValue = entity?.ToString() ?? (newId.Equals(0) ? allText : string.Empty),
+            };
+            changeLogs ??= new List<ChangeLog>();
+            changeLogs.Add(change);
+            return changeLogs;
+        }
+        return changeLogs;
+    }
+
+    protected async Task<List<ChangeLog>> LogByIdAsync<TEntity>(List<ChangeLog> changeLogs, string oldId, string newId, string text = "", string allText = "")
+        where TEntity : BaseModel, new()
+    {
+        var oId = oldId ?? string.Empty;
+        var nId = newId ?? string.Empty;
+        return await LogByIdAsync<TEntity, string>(changeLogs, oId, nId, text, allText);
+    }
+
+    public virtual async Task<T> UpdateAsync(T entity)
+    {
+        try
+        {
+            if (await IsExistsAsync(entity))
+            {
+                throw new UniqueException(model: entity);
+            }
+            _db.Entry(entity).State = EntityState.Detached;
+            entity.UpdatedBy = _current?.FullName ?? "-";
+            entity.UpdatedDate = DateTime.Now;
+            await UpdateUnsavedAsync(entity);
+            await _db.SaveChangesAsync();
+
+            return entity;
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            throw new LogicException(ExceptResx.DataConcurrencyConflicts);
+        }
+    }
+
+    public virtual async Task<TEntity> UpdateUnsavedAsync<TEntity>(TEntity entity)
+        where TEntity : class
+    {
+        var hasActiveColumn = typeof(TEntity).GetProperties().Any(x => x.Name == "IsActive");
+        var dyn = entity as dynamic;
+        //dyn.CreatedDate = DateTime.Now;
+        _db.Entry(dyn).State = EntityState.Detached;
+
+        var cur = await _db.Set<TEntity>().FindAsync(dyn.Id);
+
+        if (SaveAuditTrail)
+        {
+            await SaveAuditTrailAsync(oldEntity: cur, entity: dyn, flag: ChangeLogAction.Update, getMoreChangeLog: true);
+        }
+
+        if (hasActiveColumn)
+        {
+            if (dyn.IsActive)
+            {
+                _db.Entry(cur).CurrentValues.SetValues(dyn);
+            }
+            else
+            {
+                cur.UpdatedDate = DateTime.Now;
+                cur.IsActive = false;
+            }
+        }
+        else
+        {
+            _db.Entry(cur).CurrentValues.SetValues(dyn);
+        }
+
+        if (_enableCache
+            && _current.Cache != null)
+        {
+            await _current.Cache.RemoveAsync($"{typeof(TEntity).Name}/{dyn.Id}");
+        }
+
+        return dyn;
+    }
+
+
+    public virtual async Task<T> RemoveAsync(string id)
+    {
+        var entity = await FindAsync(id);
+        if (!await CanRemoveAsync(entity!))
+        {
+            throw new InusedException(model: entity);
+        }
+        return await RemoveAsync(entity!);
+    }
+
+    public virtual async Task<T> RemoveAsync(T entity)
+    {
+        var i = 0;
+        var saved = false;
+        while (!saved)
+        {
+            i++;
+            if (i > 10) { throw new Exception("Too many tries"); }
+
+            try
+            {
+                if (_hasActiveColumn)
+                {
+                    SetActive(entity, false);
+                    await UpdateUnsavedAsync(entity);
+                    await _db.SaveChangesAsync();
+                }
+                else
+                {
+                    _db.Remove(entity);
+                    await _db.SaveChangesAsync();
+                }
+                saved = true;
+
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+
+            }
+        }
+        if (SaveAuditTrail)
+        {
+            await SaveAuditTrailAsync(oldEntity: null, entity: entity, flag: ChangeLogAction.Remove, getMoreChangeLog: false);
+        }
+
+        return entity;
+
+    }
+
+    public virtual async Task<bool> CanRemoveAsync(string id)
+    {
+        var entity = await FindAsync(id);
+        return await CanRemoveAsync(entity!);
+    }
+    public virtual async Task<bool> CanRemoveAsync(T entity)
+    {
+        return await Task.FromResult(true);
+    }
+    public virtual async Task<bool> IsExistsAsync(T entity)
+    {
+        return await Task.FromResult(false);
+    }
+    /// <summary>
+    /// Equivaliant to  entity.Active = x;
+    /// </summary>
+    /// <param name="active"></param>
+    private static void SetActive(T obj, bool active)
+    {
+        var pi = typeof(T).GetProperties().FirstOrDefault(x => x.Name == "IsActive");
+        if (pi == null) { return; } // no active field
+        pi.SetValue(obj, active);
+    }
+}
+
+public class DbLogic<T> : TDbLogic<T> where T : ExtBaseModel
+{
+    public DbLogic(StaffManagementDbContext db, IHttpContextScope current) : base(db, current)
+    {
+    }
+}
+
+public class DbLogicWithoutExt<T> : TDbLogic<T> where T : BaseModel
+{
+    public DbLogicWithoutExt(StaffManagementDbContext db, IHttpContextScope current) : base(db, current)
+    {
+    }
+}
