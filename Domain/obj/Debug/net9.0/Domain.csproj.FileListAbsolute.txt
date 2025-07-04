@@ -34,3 +34,4 @@ D:\BILL24\NewAssignment\StaffManagementAPI\Domain\obj\Debug\net9.0\Domain.dll
 D:\BILL24\NewAssignment\StaffManagementAPI\Domain\obj\Debug\net9.0\refint\Domain.dll
 D:\BILL24\NewAssignment\StaffManagementAPI\Domain\obj\Debug\net9.0\Domain.pdb
 D:\BILL24\NewAssignment\StaffManagementAPI\Domain\obj\Debug\net9.0\ref\Domain.dll
+d:\BILL24\NewAssignment\StaffManagementAPI\Domain\obj\Debug\net9.0\Domain.sourcelink.json

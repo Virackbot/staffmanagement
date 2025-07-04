@@ -169,3 +169,4 @@ D:\BILL24\NewAssignment\StaffManagementAPI\StaffManagement.UnitTests\bin\Debug\n
 D:\BILL24\NewAssignment\StaffManagementAPI\StaffManagement.UnitTests\bin\Debug\net9.0\RBush.dll
 D:\BILL24\NewAssignment\StaffManagementAPI\StaffManagement.UnitTests\bin\Debug\net9.0\SixLabors.Fonts.dll
 D:\BILL24\NewAssignment\StaffManagementAPI\StaffManagement.UnitTests\bin\Debug\net9.0\System.IO.Packaging.dll
+d:\BILL24\NewAssignment\StaffManagementAPI\StaffManagement.UnitTests\obj\Debug\net9.0\StaffManagement.UnitTests.sourcelink.json

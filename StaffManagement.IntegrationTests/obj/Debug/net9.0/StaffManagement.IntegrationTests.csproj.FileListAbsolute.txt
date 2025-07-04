@@ -497,3 +497,4 @@ D:\BILL24\NewAssignment\StaffManagementAPI\StaffManagement.IntegrationTests\bin\
 D:\BILL24\NewAssignment\StaffManagementAPI\StaffManagement.IntegrationTests\bin\Debug\net9.0\RBush.dll
 D:\BILL24\NewAssignment\StaffManagementAPI\StaffManagement.IntegrationTests\bin\Debug\net9.0\SixLabors.Fonts.dll
 D:\BILL24\NewAssignment\StaffManagementAPI\StaffManagement.IntegrationTests\bin\Debug\net9.0\System.IO.Packaging.dll
+d:\BILL24\NewAssignment\StaffManagementAPI\StaffManagement.IntegrationTests\obj\Debug\net9.0\StaffManagement.IntegrationTests.sourcelink.json

@@ -8,18 +8,8 @@ namespace Domain.Enums
 {
     public enum Gender
     {
-        Male,
-        Female
+        Male = 1,
+        Female = 2
     }
 
-    public enum Inquiry
-    {
-        Inquiry,
-        Confirm,
-        Category,
-        Item,
-        Verify,
-        Fee,
-        Cancel
-    }
 }

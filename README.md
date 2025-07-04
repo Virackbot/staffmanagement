@@ -1,8 +1,8 @@
-# Staff Management Project Prompt
+# Staff Management Project
 
 ## Objective
 
-Develop a simple **Staff Management** application using **ASP.NET Web API** to manage staff information, provide advanced search functionality, and export search results to Excel or PDF. The application must include comprehensive testing.
+**Staff Management** application using **ASP.NET Web API** to manage staff information, provide advanced search functionality, and export search results to Excel or PDF. The application must include comprehensive testing.
 
 ## Functional Requirements
 

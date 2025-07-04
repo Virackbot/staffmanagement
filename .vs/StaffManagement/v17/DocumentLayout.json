@@ -3,6 +3,10 @@
   "WorkspaceRootPath": "D:\\BILL24\\NewAssignment\\StaffManagementAPI\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{04D76087-FC06-4D72-A9D8-0A1F7FD85C77}|App\\App.csproj|d:\\bill24\\newassignment\\staffmanagementapi\\app\\configs\\bankapi.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{04D76087-FC06-4D72-A9D8-0A1F7FD85C77}|App\\App.csproj|solutionrelative:app\\configs\\bankapi.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{04D76087-FC06-4D72-A9D8-0A1F7FD85C77}|App\\App.csproj|d:\\bill24\\newassignment\\staffmanagementapi\\app\\services\\exportservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{04D76087-FC06-4D72-A9D8-0A1F7FD85C77}|App\\App.csproj|solutionrelative:app\\services\\exportservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -99,6 +103,19 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "BankApi.cs",
+              "DocumentMoniker": "D:\\BILL24\\NewAssignment\\StaffManagementAPI\\App\\Configs\\BankApi.cs",
+              "RelativeDocumentMoniker": "App\\Configs\\BankApi.cs",
+              "ToolTip": "D:\\BILL24\\NewAssignment\\StaffManagementAPI\\App\\Configs\\BankApi.cs",
+              "RelativeToolTip": "App\\Configs\\BankApi.cs",
+              "ViewState": "AgIAAAUAAAAAAAAAAAAxwCEAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-04T02:19:47.748Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
               "Title": "ExportService.cs",
               "DocumentMoniker": "D:\\BILL24\\NewAssignment\\StaffManagementAPI\\App\\Services\\ExportService.cs",
               "RelativeDocumentMoniker": "App\\Services\\ExportService.cs",
@@ -111,7 +128,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "Domain.csproj",
               "DocumentMoniker": "D:\\BILL24\\NewAssignment\\StaffManagementAPI\\Domain\\Domain.csproj",
               "RelativeDocumentMoniker": "Domain\\Domain.csproj",

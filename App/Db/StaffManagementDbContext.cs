@@ -64,23 +64,7 @@ public class StaffManagementDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        // Configure Staff entity
-        modelBuilder.Entity<Staff>(entity =>
-        {
-            entity.HasKey(e => e.StaffId);
-            entity.Property(e => e.StaffId).HasMaxLength(8);
-            entity.Property(e => e.FullName).HasMaxLength(100).IsRequired();
-            entity.Property(e => e.Birthday).IsRequired();
-            entity.Property(e => e.Gender).IsRequired();
-            entity.Property(e => e.CreatedAt).IsRequired();
-            entity.Property(e => e.UpdatedAt).IsRequired();
-
-            // Add indexes for performance
-            entity.HasIndex(e => e.FullName);
-            entity.HasIndex(e => e.Gender);
-            entity.HasIndex(e => e.Birthday);
-        });
-
+        // Apply all entity configurations from the Configs folder
         modelBuilder.ApplyAllConfigurations();
     }
 
