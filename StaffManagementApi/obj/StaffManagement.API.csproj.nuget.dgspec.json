@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\BILL24\\NewAssignment\\StaffManagementAPI\\StaffManagementApi\\StaffManagement.API.csproj": {}
+    "d:\\BILL24\\NewAssignment\\StaffManagementAPI\\StaffManagementApi\\StaffManagement.API.csproj": {}
   },
   "projects": {
-    "D:\\BILL24\\NewAssignment\\StaffManagementAPI\\App\\App.csproj": {
+    "d:\\BILL24\\NewAssignment\\StaffManagementAPI\\App\\App.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\BILL24\\NewAssignment\\StaffManagementAPI\\App\\App.csproj",
+        "projectUniqueName": "d:\\BILL24\\NewAssignment\\StaffManagementAPI\\App\\App.csproj",
         "projectName": "App",
-        "projectPath": "D:\\BILL24\\NewAssignment\\StaffManagementAPI\\App\\App.csproj",
+        "projectPath": "d:\\BILL24\\NewAssignment\\StaffManagementAPI\\App\\App.csproj",
         "packagesPath": "C:\\Users\\Botz\\.nuget\\packages\\",
-        "outputPath": "D:\\BILL24\\NewAssignment\\StaffManagementAPI\\App\\obj\\",
+        "outputPath": "d:\\BILL24\\NewAssignment\\StaffManagementAPI\\App\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -32,8 +32,8 @@
           "net9.0": {
             "targetAlias": "net9.0",
             "projectReferences": {
-              "D:\\BILL24\\NewAssignment\\StaffManagementAPI\\Domain\\Domain.csproj": {
-                "projectPath": "D:\\BILL24\\NewAssignment\\StaffManagementAPI\\Domain\\Domain.csproj"
+              "d:\\BILL24\\NewAssignment\\StaffManagementAPI\\Domain\\Domain.csproj": {
+                "projectPath": "d:\\BILL24\\NewAssignment\\StaffManagementAPI\\Domain\\Domain.csproj"
               }
             }
           }
@@ -99,14 +99,14 @@
         }
       }
     },
-    "D:\\BILL24\\NewAssignment\\StaffManagementAPI\\Domain\\Domain.csproj": {
+    "d:\\BILL24\\NewAssignment\\StaffManagementAPI\\Domain\\Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\BILL24\\NewAssignment\\StaffManagementAPI\\Domain\\Domain.csproj",
+        "projectUniqueName": "d:\\BILL24\\NewAssignment\\StaffManagementAPI\\Domain\\Domain.csproj",
         "projectName": "Domain",
-        "projectPath": "D:\\BILL24\\NewAssignment\\StaffManagementAPI\\Domain\\Domain.csproj",
+        "projectPath": "d:\\BILL24\\NewAssignment\\StaffManagementAPI\\Domain\\Domain.csproj",
         "packagesPath": "C:\\Users\\Botz\\.nuget\\packages\\",
-        "outputPath": "D:\\BILL24\\NewAssignment\\StaffManagementAPI\\Domain\\obj\\",
+        "outputPath": "d:\\BILL24\\NewAssignment\\StaffManagementAPI\\Domain\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -186,14 +186,14 @@
         }
       }
     },
-    "D:\\BILL24\\NewAssignment\\StaffManagementAPI\\StaffManagementApi\\StaffManagement.API.csproj": {
+    "d:\\BILL24\\NewAssignment\\StaffManagementAPI\\StaffManagementApi\\StaffManagement.API.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\BILL24\\NewAssignment\\StaffManagementAPI\\StaffManagementApi\\StaffManagement.API.csproj",
+        "projectUniqueName": "d:\\BILL24\\NewAssignment\\StaffManagementAPI\\StaffManagementApi\\StaffManagement.API.csproj",
         "projectName": "StaffManagement.API",
-        "projectPath": "D:\\BILL24\\NewAssignment\\StaffManagementAPI\\StaffManagementApi\\StaffManagement.API.csproj",
+        "projectPath": "d:\\BILL24\\NewAssignment\\StaffManagementAPI\\StaffManagementApi\\StaffManagement.API.csproj",
         "packagesPath": "C:\\Users\\Botz\\.nuget\\packages\\",
-        "outputPath": "D:\\BILL24\\NewAssignment\\StaffManagementAPI\\StaffManagementApi\\obj\\",
+        "outputPath": "d:\\BILL24\\NewAssignment\\StaffManagementAPI\\StaffManagementApi\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -214,11 +214,11 @@
           "net9.0": {
             "targetAlias": "net9.0",
             "projectReferences": {
-              "D:\\BILL24\\NewAssignment\\StaffManagementAPI\\App\\App.csproj": {
-                "projectPath": "D:\\BILL24\\NewAssignment\\StaffManagementAPI\\App\\App.csproj"
+              "d:\\BILL24\\NewAssignment\\StaffManagementAPI\\App\\App.csproj": {
+                "projectPath": "d:\\BILL24\\NewAssignment\\StaffManagementAPI\\App\\App.csproj"
               },
-              "D:\\BILL24\\NewAssignment\\StaffManagementAPI\\Domain\\Domain.csproj": {
-                "projectPath": "D:\\BILL24\\NewAssignment\\StaffManagementAPI\\Domain\\Domain.csproj"
+              "d:\\BILL24\\NewAssignment\\StaffManagementAPI\\Domain\\Domain.csproj": {
+                "projectPath": "d:\\BILL24\\NewAssignment\\StaffManagementAPI\\Domain\\Domain.csproj"
               }
             }
           }

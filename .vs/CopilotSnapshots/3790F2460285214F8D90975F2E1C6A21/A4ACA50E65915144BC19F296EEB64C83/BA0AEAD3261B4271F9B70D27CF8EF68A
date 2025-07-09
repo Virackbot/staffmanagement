@@ -1,9 +1,0 @@
-﻿# Staff Management API
-
-A comprehensive Staff Management API built with ASP.NET Core 9.0, following clean architecture principles and providing full CRUD operations, advanced search functionality, and export capabilities.
-
-## Features
-
-### Core Functionality
-- **Complete CRUD Operations**: Create, Read, Update, Delete staff records
-- **Advanced Search**: Filter staff by ID

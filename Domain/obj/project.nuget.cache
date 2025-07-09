@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "LDL6U/LtmgM=",
+  "dgSpecHash": "TNdU+VzL10k=",
   "success": true,
-  "projectFilePath": "D:\\BILL24\\NewAssignment\\StaffManagementAPI\\Domain\\Domain.csproj",
+  "projectFilePath": "d:\\BILL24\\NewAssignment\\StaffManagementAPI\\Domain\\Domain.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Botz\\.nuget\\packages\\automapper\\14.0.0\\automapper.14.0.0.nupkg.sha512",
     "C:\\Users\\Botz\\.nuget\\packages\\microsoft.aspnetcore.authentication.abstractions\\2.2.0\\microsoft.aspnetcore.authentication.abstractions.2.2.0.nupkg.sha512",
